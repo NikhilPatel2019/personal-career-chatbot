@@ -3,7 +3,7 @@ Chat about my career using this bot
 
 1. Generate python virtual environment using:
     ```
-    python -m venv venv 
+    python -m venv venv
     ```
 2. Activate virtual environemnt using:
     ```
