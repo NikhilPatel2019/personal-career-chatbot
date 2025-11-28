@@ -1,25 +1,16 @@
-"""Career Chatbot API - Main application entry point.
-
-This module contains the FastAPI application for the career chatbot service.
-"""
-
 import logging
-from typing import Dict, Any
+from typing import Dict
 
-from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-
 from services import ChatAgentService
 
-# Load environment variables
 load_dotenv(override=True)
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize service
 chat_service = ChatAgentService()
 
 
@@ -31,7 +22,6 @@ class ChatResponse(BaseModel):
     response: str
 
 
-# Initialize FastAPI app
 app = FastAPI(
     title="Career Chatbot API",
     description="AI-powered career assistant chatbot",

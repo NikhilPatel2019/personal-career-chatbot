@@ -1,9 +1,8 @@
 import logging
-from typing import Any, Dict, List
+from typing import Dict, List, cast
 
+from config import BASIC_MODEL_NAME, SYSTEM_PROMPT
 from langchain.agents import create_agent
-
-from config import SYSTEM_PROMPT, BASIC_MODEL_NAME
 from middleware import dynamic_model_selection
 from models import ModelFactory
 
@@ -47,7 +46,8 @@ class ChatAgentService:
             response_content = last_message.content
 
             logger.info("Message processed successfully")
-            return response_content
+
+            return cast(str, response_content)
 
         except Exception as e:
             logger.error(f"Error processing message: {str(e)}", exc_info=True)

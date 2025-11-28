@@ -1,9 +1,8 @@
 import logging
-from typing import Any, Dict
-
-from langchain.agents.middleware import ModelRequest, ModelResponse, wrap_model_call
+from typing import cast
 
 from config import ADVANCED_MODEL_NAME, MESSAGE_COUNT_THRESHOLD
+from langchain.agents.middleware import ModelRequest, ModelResponse, wrap_model_call
 from models import ModelFactory
 
 logger = logging.getLogger(__name__)
@@ -22,4 +21,4 @@ def dynamic_model_selection(request: ModelRequest, handler) -> ModelResponse:
     else:
         model = ModelFactory.get_basic_model()
 
-    return handler(request.override(model=model))
+    return cast(ModelResponse, handler(request.override(model=model)))
