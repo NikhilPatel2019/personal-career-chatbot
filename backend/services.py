@@ -1,5 +1,6 @@
+import json
 import logging
-from typing import Dict, List, cast
+from typing import Dict, Generator, List, cast
 
 from config import BASIC_MODEL_NAME, SYSTEM_PROMPT
 from langchain.agents import create_agent
@@ -28,6 +29,11 @@ class ChatAgentService:
             {"role": "user", "content": user_message},
         ]
 
+    def _format_messages_history(self, chat_history: List[Dict[str, str]]) -> List[Dict[str, str]]:
+        messages = [{"role": "system", "content": self.system_prompt}]
+        messages.extend(chat_history)
+        return messages
+
     def process_message(self, user_message: str) -> str:
         if not user_message or not user_message.strip():
             raise ValueError("User message cannot be empty")
@@ -48,6 +54,26 @@ class ChatAgentService:
             logger.info("Message processed successfully")
 
             return cast(str, response_content)
+
+        except Exception as e:
+            logger.error(f"Error processing message: {str(e)}", exc_info=True)
+            raise
+
+    def process_message_in_stream(
+        self, message_history: List[Dict[str, str]]
+    ) -> Generator[str, None, None]:
+        try:
+            agent = self._create_agent()
+            messages = self._format_messages_history(message_history)
+
+            logger.debug(f"Processing {len(message_history)} messages from history...")
+            for chunk in agent.stream({"messages": messages}, stream_mode="values"):
+                latest_message = chunk["messages"][-1]
+
+                if hasattr(latest_message, "content") and latest_message.content:
+                    print(f"Content: {latest_message.content}")
+                    data = json.dumps({"content": latest_message.content})
+                    yield f"data: {data}\n\n"
 
         except Exception as e:
             logger.error(f"Error processing message: {str(e)}", exc_info=True)

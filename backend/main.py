@@ -3,6 +3,7 @@ from typing import Dict
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from services import ChatAgentService
 
@@ -16,6 +17,10 @@ chat_service = ChatAgentService()
 
 class ChatPayload(BaseModel):
     message: str = Field(..., min_length=1, max_length=2000)
+
+
+class StreamChatPayload(BaseModel):
+    messages: list[Dict[str, str]] = Field(...)
 
 
 class ChatResponse(BaseModel):
@@ -51,3 +56,15 @@ def chat(payload: ChatPayload) -> ChatResponse:
             status_code=500,
             detail="An error occurred while processing your message. Please try again.",
         )
+
+
+@app.post("/chat/stream", tags=["Chat"])
+def streamChat(payload: StreamChatPayload) -> StreamingResponse:
+    try:
+        message_history = payload.messages
+        generator = chat_service.process_message_in_stream(message_history)
+        return StreamingResponse(generator, media_type="text/event-stream")
+
+    except ValueError as e:
+        logger.warning(f"Validation error: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
