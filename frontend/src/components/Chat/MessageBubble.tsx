@@ -3,31 +3,32 @@ import { IconRobot, IconUser } from '@tabler/icons-react';
 
 interface MessageBubbleProps {
     content: string;
-    role: 'user' | 'assistant';
+    role: 'user' | 'assistant' | 'system';
 }
 
 export function MessageBubble({ content, role }: MessageBubbleProps) {
     const theme = useMantineTheme();
     const isUser = role === 'user';
+    const isSystem = role === 'system';
 
     return (
         <Paper
             p="md"
             radius="xl"
-            bg={isUser ? 'violet.6' : 'transparent'}
-            c={isUser ? 'white' : 'text'}
+            bg={isSystem ? 'transparent' : isUser ? 'violet.6' : 'transparent'}
+            c={isSystem ? 'dimmed' : isUser ? 'white' : 'text'}
             shadow={isUser ? 'sm' : undefined}
             withBorder={!isUser}
             style={{
                 maxWidth: '85%',
-                alignSelf: isUser ? 'flex-end' : 'flex-start',
+                alignSelf: isSystem ? 'center' : isUser ? 'flex-end' : 'flex-start',
                 borderBottomRightRadius: isUser ? 0 : theme.radius.xl,
                 borderBottomLeftRadius: isUser ? theme.radius.xl : 0,
                 borderColor: !isUser ? 'var(--mantine-color-default-border)' : undefined,
             }}
         >
             <Group align="flex-start" wrap="nowrap" gap="sm">
-                {!isUser && (
+                {!isUser && !isSystem && (
                     <ThemeIcon size={32} radius="xl" variant="gradient" gradient={{ from: 'violet', to: 'pink' }}>
                         <IconRobot size="1.2rem" />
                     </ThemeIcon>
