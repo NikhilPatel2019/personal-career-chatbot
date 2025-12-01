@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Dict, Generator, List, cast
+from typing import Any, Dict, Generator, List, Optional, cast
 
 from config import BASIC_MODEL_NAME, SYSTEM_PROMPT
 from langchain.agents import create_agent
@@ -49,11 +49,21 @@ class ChatAgentService:
                 raise ValueError("Invalid agent response structure")
 
             last_message = result["messages"][-1]
-            response_content = last_message.content
+            # Extract content safely from either dict responses or message objects.
+            if isinstance(last_message, dict):
+                response_content_raw: Any = last_message.get("content")
+            else:
+                response_content_raw = getattr(last_message, "content", None)
+
+            # Narrow type explicitly so mypy recognizes we're returning `str` rather than `Any`.
+            if not isinstance(response_content_raw, str):
+                raise ValueError("Invalid response content from agent; expected string")
+
+            response_content: str = cast(str, response_content_raw)
 
             logger.info("Message processed successfully")
 
-            return cast(str, response_content)
+            return response_content
 
         except Exception as e:
             logger.error(f"Error processing message: {str(e)}", exc_info=True)
@@ -67,12 +77,56 @@ class ChatAgentService:
             messages = self._format_messages_history(message_history)
 
             logger.debug(f"Processing {len(message_history)} messages from history...")
+
+            def _get_message_role(msg) -> str:
+                if isinstance(msg, dict):
+                    role_val = (msg.get("role") or msg.get("type") or "").lower()
+                    if role_val:
+                        return role_val
+
+                if hasattr(msg, "role") and getattr(msg, "role"):
+                    return str(getattr(msg, "role")).lower()
+                if hasattr(msg, "type") and getattr(msg, "type"):
+                    return str(getattr(msg, "type")).lower()
+                    return str(getattr(msg, "type")).lower()
+
+                cls_name = msg.__class__.__name__.lower()
+                if "human" in cls_name or "user" in cls_name:
+                    return "user"
+                if "system" in cls_name:
+                    return "system"
+                if "ai" in cls_name or "assistant" in cls_name:
+                    return "assistant"
+                return cls_name
+
             for chunk in agent.stream({"messages": messages}, stream_mode="values"):
                 latest_message = chunk["messages"][-1]
+                role = _get_message_role(latest_message)
 
-                if hasattr(latest_message, "content") and latest_message.content:
-                    print(f"Content: {latest_message.content}")
-                    data = json.dumps({"content": latest_message.content})
+                assistant_roles = {
+                    "assistant",
+                    "ai",
+                    "ai_message",
+                    "airesponse",
+                    "assistantmessage",
+                }
+                if role not in assistant_roles:
+                    continue
+
+                content: Optional[str] = None
+                if isinstance(latest_message, dict):
+                    maybe_content: Any = latest_message.get("content")
+                elif hasattr(latest_message, "content"):
+                    maybe_content = getattr(latest_message, "content")
+                else:
+                    maybe_content = None
+
+                if isinstance(maybe_content, str):
+                    content = maybe_content
+
+                if content:
+                    logger.debug(f"Content: {content}")
+                    data = json.dumps({"role": role, "content": content})
                     yield f"data: {data}\n\n"
 
         except Exception as e:

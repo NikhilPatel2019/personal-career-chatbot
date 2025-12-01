@@ -1,8 +1,10 @@
 import logging
+import os
 from typing import Dict
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from services import ChatAgentService
@@ -31,6 +33,33 @@ app = FastAPI(
     title="Career Chatbot API",
     description="AI-powered career assistant chatbot",
     version="1.0.0",
+)
+
+origins_env = os.environ.get("ALLOWED_ORIGINS")
+if origins_env:
+    try:
+        # allow the special value "*" to permit all origins
+        if origins_env.strip() == "*":
+            origins = ["*"]
+        else:
+            origins = [o.strip() for o in origins_env.split(",") if o.strip()]
+    except Exception:
+        origins = []
+else:
+    # sensible defaults for local development
+    origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
