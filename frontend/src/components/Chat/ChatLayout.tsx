@@ -16,9 +16,11 @@ export function ChatLayout() {
     const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
     const [messages, setMessages] = useState<Message[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSend = async (content: string) => {
         console.log("handleSend called with content:", content);
+        setIsLoading(true);
         const newMessage: Message = {
             id: Date.now().toString(),
             role: 'user',
@@ -29,78 +31,82 @@ export function ChatLayout() {
         setMessages(updatedMessages);
         console.log("messages", updatedMessages);
 
-        const response = await fetch('http://localhost:8000/chat/stream', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ messages: updatedMessages }),
-        });
+        try {
+            const response = await fetch('http://localhost:8000/chat/stream', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ messages: updatedMessages }),
+            });
 
-        if (!response.body) return;
+            if (!response.body) {
+                setIsLoading(false);
+                return;
+            }
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
 
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            const parts = buffer.split('\n\n');
-            buffer = parts.pop() || '';
-            for (const part of parts) {
-                const line = part.split('\n').find((l) => l.startsWith('data:'));
-                if (!line) continue;
-                try {
-                    const payload = JSON.parse(line.replace(/^data:\s*/, '')) as { role?: string; content?: string };
-                    const eventRole = (payload.role || 'assistant').toLowerCase();
-                    const eventContent = payload.content || '';
-                    if (!eventContent) continue;
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    setIsLoading(false);
+                    break;
+                }
+                buffer += decoder.decode(value, { stream: true });
+                const parts = buffer.split('\n\n');
+                buffer = parts.pop() || '';
+                for (const part of parts) {
+                    const line = part.split('\n').find((l) => l.startsWith('data:'));
+                    if (!line) continue;
+                    try {
+                        const payload = JSON.parse(line.replace(/^data:\s*/, '')) as { role?: string; content?: string };
+                        const eventRole = (payload.role || 'assistant').toLowerCase();
+                        const eventContent = payload.content || '';
+                        if (!eventContent) continue;
 
-                    setMessages((prev) => {
-                        const role: Message['role'] = eventRole === 'system' ? 'system' : eventRole === 'user' ? 'user' : 'assistant';
+                        setMessages((prev) => {
+                            const role: Message['role'] = eventRole === 'system' ? 'system' : eventRole === 'user' ? 'user' : 'assistant';
 
-                        if (role === 'assistant') {
-                            if (prev.length && prev[prev.length - 1].role === 'assistant') {
-                                return [
-                                    ...prev.slice(0, -1),
-                                    { ...prev[prev.length - 1], content: eventContent },
-                                ];
-                            }
-                            return [...prev, { id: Date.now().toString(), role: 'assistant', content: eventContent }];
-                        }
-
-                        if (role === 'user') {
-                            if (prev.length && prev[prev.length - 1].role === 'user') {
-                                if (prev[prev.length - 1].content === eventContent) {
-                                    return prev;
+                            if (role === 'assistant') {
+                                if (prev.length && prev[prev.length - 1].role === 'assistant') {
+                                    return [
+                                        ...prev.slice(0, -1),
+                                        { ...prev[prev.length - 1], content: eventContent },
+                                    ];
                                 }
-                                return [
-                                    ...prev.slice(0, -1),
-                                    { ...prev[prev.length - 1], content: eventContent },
-                                ];
+                                return [...prev, { id: Date.now().toString(), role: 'assistant', content: eventContent }];
                             }
-                            const exists = prev.some((m) => m.role === 'user' && m.content === eventContent);
-                            if (exists) return prev;
-                            return [...prev, { id: Date.now().toString(), role: 'user', content: eventContent }];
-                        }
 
-                        return [...prev, { id: Date.now().toString(), role: 'system', content: eventContent }];
-                    });
-                } catch (err) {
-                    console.error('Failed to parse SSE data chunk:', err, part);
-                    continue;
+                            if (role === 'user') {
+                                if (prev.length && prev[prev.length - 1].role === 'user') {
+                                    if (prev[prev.length - 1].content === eventContent) {
+                                        return prev;
+                                    }
+                                    return [
+                                        ...prev.slice(0, -1),
+                                        { ...prev[prev.length - 1], content: eventContent },
+                                    ];
+                                }
+                                const exists = prev.some((m) => m.role === 'user' && m.content === eventContent);
+                                if (exists) return prev;
+                                return [...prev, { id: Date.now().toString(), role: 'user', content: eventContent }];
+                            }
+
+                            return [...prev, { id: Date.now().toString(), role: 'system', content: eventContent }];
+                        });
+                    } catch (err) {
+                        console.error('Failed to parse SSE data chunk:', err, part);
+                        continue;
+                    }
                 }
             }
+        } catch (error) {
+            console.error('Error sending message:', error);
+            setIsLoading(false);
         }
-            // const responseMessage: Message = {
-            //     id: (Date.now() + 1).toString(),
-            //     role: 'assistant',
-            //     content: responseMessage,
-            // };
-            // setMessages((prev) => [...prev, responseMessage]);
-        // }, 1000);
     };
 
     const toggleColorScheme = () => {
@@ -145,7 +151,7 @@ export function ChatLayout() {
                             <WelcomeScreen onSuggestionClick={handleSend} />
                         ) : (
                             <Container size="lg" h="100%" py="md">
-                                <ChatArea messages={messages} />
+                                <ChatArea messages={messages} isLoading={isLoading} />
                             </Container>
                         )}
                     </Box>
