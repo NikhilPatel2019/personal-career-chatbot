@@ -24,9 +24,9 @@ Todos:
 - [ ] Token Calculation and model selection
 - [ ] Summary generaion if token limit exceeds
 - [ ] Build frontend
-    - [ ] Vite+React+TS setup
-    - [ ] chat ui
-    - [ ] Functionality
-    - [ ] API Integration
+    - [X] Vite+React+TS setup
+    - [X] chat ui
+    - [X] Functionality
+    - [X] API Integration
 - [ ] Standalone python app with gradio
 - [ ] Update System Prompt
