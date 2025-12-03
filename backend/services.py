@@ -13,6 +13,8 @@ logger = logging.getLogger(__name__)
 class ChatAgentService:
     def __init__(self, system_prompt: str = SYSTEM_PROMPT):
         self.system_prompt = system_prompt
+        with open("professional_details/details.txt", "r", encoding="utf-8") as f:
+            self.system_prompt += f.read()
         logger.info("ChatAgentService initialized")
 
     def _create_agent(self):
