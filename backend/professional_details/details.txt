@@ -1,11 +1,117 @@
-Nikhil Patel is a results-driven Full Stack and AI-focused Software Engineer with over **3.5 years of experience** designing, building, and scaling production-grade systems across backend, frontend, cloud, and GenAI domains. His career demonstrates a consistent pattern of **end-to-end ownership**, rapid learning, and delivering solutions that significantly enhance product quality, operational efficiency, and customer satisfaction.
+# **Detailed Professional Career Summary — First-Person Version**
 
-He began his professional journey as a **Full Stack Developer Intern** at InfiniumDevio, where he quickly learned React and Node.js and contributed to multiple core modules, building 10–15 RESTful APIs and integrating them with frontend systems. This early exposure to full-stack development shaped his ability to independently own features across the stack.
+My name is **Nikhil Patel**, and I come from a small town in Navsari called Maroli. I completed my primary schooling there up to the 8th standard, after which I moved to Navsari for higher studies. I scored **81% in Class 10** and **59% in Class 12**, and despite the drop, I bounced back strongly during my engineering degree. I completed my **Bachelor’s in Computer Engineering** from Ahmedabad with a **9.3 CGPA**.
 
-Joining **o2h Technology** marked a major shift in scope and impact. As **Associate Software Engineer I**, he led the development of the company’s in-house **Electronic Lab Notebook (ELN)** module. He architected the backend (Adonis.js), frontend (React.js), and database schema, integrating it seamlessly into existing systems. This initiative eliminated the need for external vendor tools, delivering **100% cost savings** and improving workflow efficiency by reducing chemical update time by 60%. He also improved onboarding processes, reducing developer setup time by 50%.
+During college, I actively participated in hackathons and built a project called **MedEarn**, a platform to buy and sell medicines, using **React, Node.js, and MongoDB**. This project helped shape my interest in building full-stack applications end-to-end.
 
-Growing into **Associate Software Engineer II**, Nikhil took ownership of critical components of the award-winning **CITC (Chemistry in the Cloud)** platform. He designed and implemented advanced chemical search functionality using Python and RDKit, supporting 10–12 external clients and 200+ internal users. He later optimized operational costs by migrating workloads from AWS Lambda to FastAPI on EC2, achieving **100% cost reduction**. He also contributed to GenAI initiatives—fine-tuning GPT-3.5 with custom datasets and integrating OpenAI Assistants into workflow automation.
+---
 
-As a **Senior Associate Software Engineer II**, his role expanded into client-facing responsibilities, cloud integrations, and AI/LLM engineering. He integrated **LangChainJS** to improve OpenAI JSON reliability from 60% to 99% and boosted output quality from 50% to 90%. His contributions to **WriteRecruit**—delivering all three project phases—drove a smooth transition to live users and resulted in a **client satisfaction score of 4.8/5**. He also improved internal developer operations by integrating a Jenkins Bot into Mattermost, reducing access time by 50% and strengthening access control security.
+# **Early Career: Internship at InfiniumDevio(2021-2022)**
 
-Throughout his journey, Nikhil has showcased a strong command over **JavaScript, Python, React.js, Node.js, AWS**, and modern AI tooling including **OpenAI APIs, LangChain, and prompt engineering**. His work consistently combines deep technical skill with the ability to solve real-world business problems—making him a well-rounded engineer ready for high-impact full-stack and AI-driven roles.
+I started my professional journey with a 3-month internship at InfiniumDevio. During this period:
+
+* I worked on building **headless CMS APIs**
+* Developed frontend components for the CMS
+* Used **Node.js, React, and MySQL** to create functional, integrated systems
+
+This internship gave me a solid foundation in API development, UI building, and database workflows.
+
+---
+
+# **My Journey at o2h Technology(2022-Present)**
+
+## **1. Associate Software Engineer**
+
+After my internship, I joined o2h Technology as an Associate Software Engineer. One of my first major contributions was working on the company’s **Electronic Lab Notebook (ELN)** used by the Discovery department.
+
+Here’s what I worked on:
+
+* Developed features on a legacy **AdonisJS** codebase
+* Designed database schemas in **MySQL**, built backend APIs
+* Developed UI components in **React.js**
+* Integrated APIs and interfaces to deliver end-to-end functionality
+* Prepared a detailed setup document for a large internal product to help with onboarding and environment consistency
+
+---
+
+## **2. Associate Software Engineer II**
+
+As I grew, I moved into a more responsible role and started leading both internal and client projects.
+
+### **Team & Project Leadership**
+
+* Led a team of **4–5 developers**, looking after task planning, code reviews, resource allocation, and mentoring
+* Handled **client communication**, requirement discussions, and delivery planning
+
+### **Technical Contributions**
+
+* Built advanced **chemical search functionality** using **RDKit**, deployed on AWS Lambda
+* Later migrated the chemical search engine to **Python + FastAPI** and deployed it on an existing EC2 instance
+* Worked as the **tech lead** on a client project focused on generating job adverts using AI
+* Built full **Node.js + React + MySQL + TypeScript** applications from scratch
+* Integrated **OpenAI Assistant API** and **Completion API**, experimenting with prompt engineering techniques to generate better job adverts
+* Delivered job ads using the **AIDA model** and question-based templates
+* Managed both frontend and backend development, database design, and deployment pipelines
+* Handled CI/CD using **Jenkins**, **Bitbucket Pipelines**, **EC2**, and **S3**
+
+This phase strengthened my technical depth as well as my leadership abilities.
+
+---
+
+## **3. Senior Associate Software Engineer**
+
+In this role, I began contributing at a higher level, especially in AI integrations and system optimization work.
+
+### **AI Engineering & LangChain Work**
+
+* Integrated **LangChainJS** into the WriteRecruit project to improve response accuracy and structured output parsing
+* Created multiple chains, developed output schemas, and optimized prompts
+* Improved AI response reliability to **99%**, significantly reducing parsing issues
+* Successfully delivered **three major phases** of the WriteRecruit project
+
+### **Internal Product Improvements**
+
+* Integrated a **Jenkins Bot** into Mattermost to improve CI/CD communication
+* Worked closely on requirement gathering and high-level planning for the internal product **CITC (Chemistry in the Cloud)**
+* Built and trained a strong team of developers and QA engineers
+* Improved internal product performance by **40–50%** through strategic database indexing
+* Reduced AWS RDS costs by enabling downsizing due to optimized queries
+
+### **Personal Projects**
+
+* Built a small AI-driven podcast generation tool using **ElevenLabs API** and various TTS providers to explore Generative AI further
+
+---
+
+## **4. Software Engineer I**
+
+Currently, as a Software Engineer I at o2h Technology, I am responsible for both technical delivery and leadership across internal and client projects.
+
+### **Internal Product Responsibilities**
+
+* Mentor junior developers and guide them in writing clean, scalable, and maintainable code
+* Participate in client demos and product walkthroughs
+* Integrated **ChemDraw** into the system, which is critical for scientific workflows
+* Revamped the entire **inventory module**, cleaned up all invalid data, and re-uploaded validated chemical records into MySQL
+* Acted as on-call tech lead to resolve urgent production issues
+* Fixed broken deployment pipelines and improved reliability
+* Contributed to new module development, including enhancements to the **ELN** and **Compound Dashboard**
+
+### **WriteRecruit Phase 4**
+
+* Led development for Phase 4 of the project
+* Oversaw requirement gathering, planning, development, code reviews, and client communication
+* Ensured on-time, high-quality delivery of complex features
+
+---
+
+# **My Technical Interests & Future Direction**
+
+I am deeply interested in:
+
+* **Building scalable backend systems**
+* **Working on large distributed architectures**
+* **Performance optimization and cost-efficient engineering**
+* **Generative AI and AI-powered product development**
+
+I am continuously learning and experimenting with new tools, technologies, and architectural patterns to prepare myself for higher-level system design, AI engineering, and senior engineering roles in the future.
